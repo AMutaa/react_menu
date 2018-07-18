@@ -1,20 +1,20 @@
-import React from "react";
-import PropTypes from "prop-types";
-import Header from "./Header";
-import Order from "./Order";
-import Inventory from "./Inventory";
-import sampleFishes from "../sample-fishes";
-import Fish from "./Fish";
-import base from "../base";
+import React from 'react';
+import PropTypes from 'prop-types';
+import Header from './Header';
+import Order from './Order';
+import Inventory from './Inventory';
+import sampleFishes from '../sample-fishes';
+import Fish from './Fish';
+import base from '../base';
 
 class App extends React.Component {
   state = {
     fishes: {},
-    order: {}
+    order: {},
   };
 
   static propTypes = {
-    match: PropTypes.object
+    match: PropTypes.object,
   };
 
   componentDidMount() {
@@ -23,21 +23,18 @@ class App extends React.Component {
     const localStorageRef = localStorage.getItem(params.storeId);
     if (localStorageRef) {
       this.setState({
-        order: JSON.parse(localStorageRef)
+        order: JSON.parse(localStorageRef),
       });
     }
     this.ref = base.syncState(`${params.storeId}/fishes`, {
       context: this,
-      state: "fishes"
+      state: 'fishes',
     });
   }
 
   componentDidUpdate() {
     console.log(this.state.order);
-    localStorage.setItem(
-      this.props.match.params.storeId,
-      JSON.stringify(this.state.order)
-    );
+    localStorage.setItem(this.props.match.params.storeId, JSON.stringify(this.state.order));
   }
 
   componentWillUnmount() {
@@ -47,33 +44,33 @@ class App extends React.Component {
   addFish = fish => {
     //  Take a copy of the existing state
     const fishes = {
-      ...this.state.fishes
+      ...this.state.fishes,
     };
     // Add our new fish to that fishes variable
     fishes[`fish${Date.now()}`] = fish;
     // Set the new fishes object to state
     this.setState({
-      fishes: fishes
+      fishes,
     });
   };
 
   updateFish = (key, updatedFish) => {
     // Take a copy of the current state
     const fishes = {
-      ...this.state.fishes
+      ...this.state.fishes,
     };
     // Update that state
     fishes[key] = updatedFish;
     // Set that to state
     this.setState({
-      fishes
+      fishes,
     });
   };
 
   deleteFish = key => {
     // Take a copy of state
     const fishes = {
-      ...this.state.fishes
+      ...this.state.fishes,
     };
     // Update the state
     fishes[key] = null;
@@ -83,33 +80,33 @@ class App extends React.Component {
 
   loadSampleFishes = () => {
     this.setState({
-      fishes: sampleFishes
+      fishes: sampleFishes,
     });
   };
 
   addToOrder = key => {
     // Take a copy of state
     const order = {
-      ...this.state.order
+      ...this.state.order,
     };
     // Either add to the order, or update the number in our order
     order[key] = order[key] + 1 || 1;
     // Call setState tou update our state object
     this.setState({
-      order
+      order,
     });
   };
 
   removeFromOrder = key => {
     // Take a copy of state
     const order = {
-      ...this.state.order
+      ...this.state.order,
     };
     // remove that item form order
     delete order[key];
     // Call setState tou update our state object
     this.setState({
-      order
+      order,
     });
   };
 
@@ -119,7 +116,7 @@ class App extends React.Component {
         <div className="menu">
           <Header tagline="Boston's Best" />
           <ul className="fishes">
-            {" "}
+            {' '}
             {Object.keys(this.state.fishes).map(key => (
               <Fish
                 key={key}
@@ -127,9 +124,9 @@ class App extends React.Component {
                 details={this.state.fishes[key]}
                 addToOrder={this.addToOrder}
               />
-            ))}{" "}
-          </ul>{" "}
-        </div>{" "}
+            ))}
+          </ul>
+        </div>
         <Order
           fishes={this.state.fishes}
           order={this.state.order}
@@ -141,6 +138,7 @@ class App extends React.Component {
           deleteFish={this.deleteFish}
           loadSampleFishes={this.loadSampleFishes}
           fishes={this.state.fishes}
+          storeId={this.props.match.params.storeId}
         />
       </div>
     );
